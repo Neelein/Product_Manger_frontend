@@ -34,7 +34,7 @@ export function InventoryDetailPage() {
   const { member } = useAuth()
 
   const { inventory, loading, error, setInventory } = useInventory(id!)
-  const { update, loading: updating } = useUpdateInventory()
+  const { update } = useUpdateInventory()
   const { remove } = useDeleteInventory()
   const { items, loading: loadingItems, setItems } = useItems(id!)
   const { create: createItem } = useCreateItem()
@@ -206,6 +206,7 @@ export function InventoryDetailPage() {
                 {inventory.status}
               </span>
             </div>
+            <button className="btn-secondary" onClick={() => navigate(`/products/${inventory.product_id}`)}>返回產品</button>
           </div>
           <div className="detail-body">
             <div className="detail-section">

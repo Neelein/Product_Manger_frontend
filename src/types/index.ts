@@ -109,6 +109,8 @@ export interface ErrorResponse {
 export interface Inventory {
   id: string
   product_price_id: string
+  product_detail_id: string
+  product_id: string
   name: string
   total_quantity: number
   sold_quantity: number
