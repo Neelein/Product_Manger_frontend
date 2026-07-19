@@ -6,6 +6,7 @@ import { ProductList } from './pages/ProductList'
 import { ProductDetail } from './pages/ProductDetail'
 import { ProductForm } from './pages/ProductForm'
 import { ProfilePage } from './pages/ProfilePage'
+import { DashboardPage } from './pages/DashboardPage'
 import { InventoryListPage } from './pages/InventoryListPage'
 import { InventoryCreatePage } from './pages/InventoryCreatePage'
 import { InventoryDetailPage } from './pages/InventoryDetailPage'
@@ -17,6 +18,9 @@ function App() {
       <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<Navigate to="/" replace />} />
       <Route element={<Layout />}>
+        <Route path="/home" element={
+          <ProtectedRoute><DashboardPage /></ProtectedRoute>
+        } />
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/new" element={
           <ProtectedRoute><ProductForm /></ProtectedRoute>
@@ -34,7 +38,7 @@ function App() {
         } />
         <Route path="/inventory/:id" element={<InventoryDetailPage />} />
       </Route>
-      <Route path="*" element={<Navigate to="/products" replace />} />
+      <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
   )
 }

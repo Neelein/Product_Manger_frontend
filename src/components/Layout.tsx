@@ -14,14 +14,14 @@ export function Layout() {
     <div className="layout">
       <header className="navbar">
         <div className="navbar-inner">
-          <Link to="/products" className="navbar-brand">
+          <Link to="/home" className="navbar-brand">
             <span className="navbar-logo">📋</span>
             <span>產品管理系統</span>
           </Link>
 
           <nav className="navbar-nav">
-            <Link to="/products" className="nav-link">產品列表</Link>
-            <Link to="/inventory" className="nav-link">庫存管理</Link>
+            <Link to="/home" className="nav-link">產品</Link>
+            <span className="nav-link nav-link-disabled">訊息</span>
           </nav>
 
           <div className="navbar-right">

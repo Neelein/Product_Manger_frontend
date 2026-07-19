@@ -16,7 +16,7 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   if (member) {
-    navigate('/products', { replace: true })
+    navigate('/home', { replace: true })
     return null
   }
 
@@ -69,7 +69,7 @@ export function LoginPage() {
     try {
       if (mode === 'login') {
         await login({ email, password })
-        navigate('/products', { replace: true })
+        navigate('/home', { replace: true })
       } else {
         await register({ email, password, name })
         setSuccess('註冊成功！請切換至登入頁面')
