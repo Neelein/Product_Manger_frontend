@@ -21,7 +21,7 @@ export function Layout() {
 
           <nav className="navbar-nav">
             <Link to="/home" className="nav-link">產品</Link>
-            <span className="nav-link nav-link-disabled">訊息</span>
+            <Link to="/messages" className="nav-link">訊息</Link>
           </nav>
 
           <div className="navbar-right">

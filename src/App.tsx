@@ -7,6 +7,10 @@ import { ProductDetail } from './pages/ProductDetail'
 import { ProductForm } from './pages/ProductForm'
 import { ProfilePage } from './pages/ProfilePage'
 import { DashboardPage } from './pages/DashboardPage'
+import { MessagesPage } from './pages/MessagesPage'
+import { AnnouncementListPage } from './pages/AnnouncementListPage'
+import { AnnouncementDetailPage } from './pages/AnnouncementDetailPage'
+import { AnnouncementCreatePage } from './pages/AnnouncementCreatePage'
 import { InventoryListPage } from './pages/InventoryListPage'
 import { InventoryCreatePage } from './pages/InventoryCreatePage'
 import { InventoryDetailPage } from './pages/InventoryDetailPage'
@@ -21,6 +25,7 @@ function App() {
         <Route path="/home" element={
           <ProtectedRoute><DashboardPage /></ProtectedRoute>
         } />
+        <Route path="/messages" element={<MessagesPage />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/new" element={
           <ProtectedRoute><ProductForm /></ProtectedRoute>
@@ -37,6 +42,11 @@ function App() {
           <ProtectedRoute><InventoryCreatePage /></ProtectedRoute>
         } />
         <Route path="/inventory/:id" element={<InventoryDetailPage />} />
+        <Route path="/announcements" element={<AnnouncementListPage />} />
+        <Route path="/announcements/new" element={
+          <ProtectedRoute><AnnouncementCreatePage /></ProtectedRoute>
+        } />
+        <Route path="/announcements/:id" element={<AnnouncementDetailPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
