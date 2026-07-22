@@ -11,6 +11,10 @@ import { MessagesPage } from './pages/MessagesPage'
 import { AnnouncementListPage } from './pages/AnnouncementListPage'
 import { AnnouncementDetailPage } from './pages/AnnouncementDetailPage'
 import { AnnouncementCreatePage } from './pages/AnnouncementCreatePage'
+import { ChatRoomListPage } from './pages/ChatRoomListPage'
+import { ChatRoomDetailPage } from './pages/ChatRoomDetailPage'
+import { ChatRoomCreatePage } from './pages/ChatRoomCreatePage'
+import { AddRoomMembersPage } from './pages/AddRoomMembersPage'
 import { InventoryListPage } from './pages/InventoryListPage'
 import { InventoryCreatePage } from './pages/InventoryCreatePage'
 import { InventoryDetailPage } from './pages/InventoryDetailPage'
@@ -47,6 +51,18 @@ function App() {
           <ProtectedRoute><AnnouncementCreatePage /></ProtectedRoute>
         } />
         <Route path="/announcements/:id" element={<AnnouncementDetailPage />} />
+        <Route path="/chat/rooms" element={
+          <ProtectedRoute><ChatRoomListPage /></ProtectedRoute>
+        } />
+        <Route path="/chat/rooms/new" element={
+          <ProtectedRoute><ChatRoomCreatePage /></ProtectedRoute>
+        } />
+        <Route path="/chat/rooms/:roomId" element={
+          <ProtectedRoute><ChatRoomDetailPage /></ProtectedRoute>
+        } />
+        <Route path="/chat/rooms/:roomId/add-members" element={
+          <ProtectedRoute><AddRoomMembersPage /></ProtectedRoute>
+        } />
       </Route>
       <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAnnouncements } from '../hooks/useAnnouncement'
 import { useAuth } from '../hooks/useAuth'
@@ -6,7 +5,6 @@ import { useAuth } from '../hooks/useAuth'
 export function AnnouncementListPage() {
   const { announcements, loading, error } = useAnnouncements()
   const { member } = useAuth()
-  const [page, setPage] = useState(1)
 
   return (
     <div className="announcement-list-page">

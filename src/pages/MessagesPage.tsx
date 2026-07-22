@@ -7,6 +7,12 @@ const MESSAGE_FEATURES = [
     title: '佈告欄',
     description: '查看與管理系統公告',
   },
+  {
+    to: '/chat/rooms',
+    icon: '💬',
+    title: '私人訊息',
+    description: '查看與發送私人訊息',
+  },
 ]
 
 export function MessagesPage() {
