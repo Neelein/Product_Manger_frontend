@@ -19,7 +19,7 @@ Deploy the frontend to Vercel with GitHub Actions. Only the frontend goes to Ver
 
 - Push to `main` → `vercel --prod` (production deployment)
 - Push to `dev` → preview deployment (no `--prod`)
-- `vercel-action@v3` runs the Vite build itself using the project's Framework Preset
+- `vercel-action@v42` (amondnet) runs the Vite build itself using the project's Framework Preset
 - Required GitHub secrets: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
 
 ## Verification
