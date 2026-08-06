@@ -15,6 +15,10 @@ import { ChatRoomListPage } from './pages/ChatRoomListPage'
 import { ChatRoomDetailPage } from './pages/ChatRoomDetailPage'
 import { ChatRoomCreatePage } from './pages/ChatRoomCreatePage'
 import { AddRoomMembersPage } from './pages/AddRoomMembersPage'
+import { EventManagementPage } from './pages/EventManagementPage'
+import { CalendarPage } from './pages/CalendarPage'
+import { CalendarEventCreatePage } from './pages/CalendarEventCreatePage'
+import { CalendarEventDetailPage } from './pages/CalendarEventDetailPage'
 import { InventoryListPage } from './pages/InventoryListPage'
 import { InventoryCreatePage } from './pages/InventoryCreatePage'
 import { InventoryDetailPage } from './pages/InventoryDetailPage'
@@ -41,6 +45,10 @@ function App() {
         <Route path="/profile" element={
           <ProtectedRoute><ProfilePage /></ProtectedRoute>
         } />
+        <Route path="/events" element={<EventManagementPage />} />
+        <Route path="/calendar" element={<CalendarPage />} />
+        <Route path="/calendar/new" element={<ProtectedRoute><CalendarEventCreatePage /></ProtectedRoute>} />
+        <Route path="/calendar/:id" element={<CalendarEventDetailPage />} />
         <Route path="/inventory" element={<InventoryListPage />} />
         <Route path="/inventory/new/:priceId" element={
           <ProtectedRoute><InventoryCreatePage /></ProtectedRoute>

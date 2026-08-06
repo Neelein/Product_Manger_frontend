@@ -22,6 +22,7 @@ export function Layout() {
           <nav className="navbar-nav">
             <Link to="/home" className="nav-link">產品</Link>
             <Link to="/messages" className="nav-link">訊息</Link>
+            <Link to="/events" className="nav-link">事件管理</Link>
           </nav>
 
           <div className="navbar-right">

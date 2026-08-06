@@ -1,8 +1,12 @@
 import { apiFetch, apiFetchFormData } from './client'
 import type { AnnouncementListResponse, AnnouncementResponse } from '../types'
 
-export function listAnnouncements(page = 1, limit = 20): Promise<AnnouncementListResponse> {
-  return apiFetch<AnnouncementListResponse>(`/api/announcements?page=${page}&limit=${limit}`)
+export function listAnnouncements(page = 1, limit = 20, year?: number, month?: number): Promise<AnnouncementListResponse> {
+  let url = `/api/announcements?page=${page}&limit=${limit}`
+  if (year !== undefined && month !== undefined) {
+    url += `&year=${year}&month=${month}`
+  }
+  return apiFetch<AnnouncementListResponse>(url)
 }
 
 export function getAnnouncement(id: string): Promise<AnnouncementResponse> {

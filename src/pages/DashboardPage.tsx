@@ -23,14 +23,16 @@ export function DashboardPage() {
         <p className="page-subtitle">請選擇功能</p>
       </div>
 
-      <div className="dashboard-grid">
-        {FEATURES.map(f => (
-          <Link key={f.to} to={f.to} className="dashboard-card">
-            <span className="dashboard-card-icon">{f.icon}</span>
-            <span className="dashboard-card-title">{f.title}</span>
-            <span className="dashboard-card-desc">{f.description}</span>
-          </Link>
-        ))}
+      <div className="dashboard-section">
+        <div className="dashboard-grid">
+          {FEATURES.map(f => (
+            <Link key={f.to} to={f.to} className="dashboard-card">
+              <span className="dashboard-card-icon">{f.icon}</span>
+              <span className="dashboard-card-title">{f.title}</span>
+              <span className="dashboard-card-desc">{f.description}</span>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   )

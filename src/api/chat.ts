@@ -8,8 +8,12 @@ export function addRoomMembers(roomId: string, memberIds: string[]): Promise<{ m
   })
 }
 
-export function listChatRooms(): Promise<ChatRoomListResponse> {
-  return apiFetch<ChatRoomListResponse>('/api/chat/rooms')
+export function listChatRooms(year?: number, month?: number): Promise<ChatRoomListResponse> {
+  let url = '/api/chat/rooms'
+  if (year !== undefined && month !== undefined) {
+    url += `?year=${year}&month=${month}`
+  }
+  return apiFetch<ChatRoomListResponse>(url)
 }
 
 export function createChatRoom(data: CreateRoomRequest): Promise<ChatRoomResponse> {
