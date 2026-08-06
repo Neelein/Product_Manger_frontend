@@ -15,6 +15,7 @@ dist-ssr
 opencode.json
 package-lock.json
 skills-lock.json
+.vercel/
 
 # Editor directories and files
 .vscode/*
