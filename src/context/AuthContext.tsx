@@ -12,14 +12,29 @@ export interface AuthContextValue {
 
 export const AuthContext = createContext<AuthContextValue | null>(null)
 
+let sessionRequest: Promise<Member> | null = null
+
+function getSessionOnce(): Promise<Member> {
+  sessionRequest ??= membersApi
+    .getCurrentMember()
+    .finally(() => {
+      sessionRequest = null
+    })
+  return sessionRequest
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [member, setMember] = useState<Member | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    membersApi.getCurrentMember()
+    getSessionOnce()
       .then(setMember)
-      .catch(() => setMember(null))
+      .catch(() => {
+        // Do not clear an existing member on failure. member starts null and is
+        // only cleared by logout(). This shields a valid session from a racing
+        // 401 (e.g. StrictMode double effect against a rotating-session backend).
+      })
       .finally(() => setLoading(false))
   }, [])
 
