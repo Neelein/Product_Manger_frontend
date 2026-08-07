@@ -17,7 +17,6 @@ playwright-report/
 blob-report/
 
 opencode.json
-package-lock.json
 skills-lock.json
 .vercel/
 
