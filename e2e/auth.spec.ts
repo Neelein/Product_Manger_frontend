@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { login, registerAndLogin } from './helpers'
+import { freshCode, login, registerAndLogin } from './helpers'
 
 test('register a new user and land on the protected home page', async ({
   page,
@@ -34,4 +34,23 @@ test('me profile name is shown in the navbar after login', async ({
   await login(page, email, password)
   await page.goto('/home')
   await expect(page.getByRole('link', { name })).toBeVisible()
+})
+
+test('registering with a mismatched password confirmation is rejected', async ({
+  page,
+}) => {
+  const code = await freshCode()
+  const email = `mismatch-${Date.now()}@example.com`
+
+  await page.goto('/login')
+  await page.getByRole('button', { name: '註冊', exact: true }).click()
+  await page.getByLabel('姓名').fill('密碼不符測試')
+  await page.getByLabel('註冊代碼').fill(code)
+  await page.getByLabel('電子郵件').fill(email)
+  await page.getByLabel('密碼', { exact: true }).fill('e2e-a-12345')
+  await page.getByLabel('確認密碼').fill('different-99999')
+  await page.getByRole('button', { name: '註冊', exact: true }).last().click()
+
+  await expect(page.getByText('兩次輸入的密碼不一致')).toBeVisible()
+  await expect(page.getByLabel('確認密碼')).toBeVisible()
 })

@@ -23,6 +23,9 @@ export function Layout() {
             <Link to="/home" className="nav-link">產品</Link>
             <Link to="/messages" className="nav-link">訊息</Link>
             <Link to="/events" className="nav-link">事件管理</Link>
+            {member?.role === 'admin' && (
+              <Link to="/admin/registration-codes" className="nav-link">註冊代碼</Link>
+            )}
           </nav>
 
           <div className="navbar-right">
