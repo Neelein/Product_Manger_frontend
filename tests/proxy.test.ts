@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { createUpstreamRequest, proxyRequest } from '../api/[[...slug]].ts'
+import { createUpstreamRequest, proxyRequest } from '../api/[...slug].ts'
 
 test('createUpstreamRequest forwards request data and injects the gateway secret', async () => {
   const request = new Request('https://frontend.example/api/products?limit=10', {
