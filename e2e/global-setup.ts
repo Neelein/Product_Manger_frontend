@@ -13,6 +13,7 @@ const APP_TABLES = [
   'inventories',
   'members',
   'registration_codes',
+  'categories',
   'product_prices',
   'product_details',
   'products',

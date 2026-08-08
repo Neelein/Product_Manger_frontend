@@ -30,6 +30,7 @@ export interface Product {
   id: string
   name: string
   status: string
+  category_id: string
   category: string
   created_by: string
   created_at: string
@@ -39,7 +40,7 @@ export interface Product {
 export interface CreateProductRequest {
   name: string
   status: string
-  category: string
+  category_id: string
 }
 
 export type UpdateProductRequest = CreateProductRequest
@@ -104,6 +105,27 @@ export type UpdatePriceRequest = CreatePriceRequest
 
 export interface ErrorResponse {
   error: string
+}
+
+// ── Categories ──
+
+export interface Category {
+  id: string
+  name: string
+  created_at: string
+  updated_at: string
+}
+
+export interface CreateCategoryRequest {
+  name: string
+}
+
+export interface CategoryResponse {
+  category: Category
+}
+
+export interface CategoryListResponse {
+  categories: Category[]
 }
 
 // ── Registration codes (admin) ──

@@ -24,6 +24,7 @@ import { InventoryListPage } from './pages/InventoryListPage'
 import { InventoryCreatePage } from './pages/InventoryCreatePage'
 import { InventoryDetailPage } from './pages/InventoryDetailPage'
 import { RegistrationCodesPage } from './pages/RegistrationCodesPage'
+import { CategoryListPage } from './pages/CategoryListPage'
 import './App.css'
 
 function App() {
@@ -52,6 +53,9 @@ function App() {
         <Route path="/calendar/new" element={<ProtectedRoute><CalendarEventCreatePage /></ProtectedRoute>} />
         <Route path="/calendar/:id" element={<CalendarEventDetailPage />} />
         <Route path="/inventory" element={<InventoryListPage />} />
+        <Route path="/categories" element={
+          <ProtectedRoute><CategoryListPage /></ProtectedRoute>
+        } />
         <Route path="/inventory/new/:priceId" element={
           <ProtectedRoute><InventoryCreatePage /></ProtectedRoute>
         } />

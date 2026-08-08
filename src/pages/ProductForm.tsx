@@ -1,6 +1,7 @@
 import { useState, useEffect, type SubmitEvent } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useProduct, useCreateProduct, useUpdateProduct } from '../hooks/useProducts'
+import { useCategories } from '../hooks/useCategories'
 
 export function ProductForm() {
   const { id } = useParams<{ id: string }>()
@@ -8,19 +9,20 @@ export function ProductForm() {
   const navigate = useNavigate()
 
   const { product, loading: loadingProduct } = useProduct(id || '')
+  const { categories } = useCategories()
   const { create, loading: creating } = useCreateProduct()
   const { update, loading: updating } = useUpdateProduct()
 
   const [name, setName] = useState('')
   const [status, setStatus] = useState('active')
-  const [category, setCategory] = useState('')
+  const [categoryId, setCategoryId] = useState('')
   const [error, setError] = useState('')
 
   useEffect(() => {
     if (isEdit && product) {
       setName(product.name)
       setStatus(product.status || 'active')
-      setCategory(product.category)
+      setCategoryId(product.category_id || '')
     }
   }, [isEdit, product])
 
@@ -30,12 +32,12 @@ export function ProductForm() {
     e.preventDefault()
     setError('')
 
-    if (!name.trim() || !category.trim()) {
+    if (!name.trim() || !categoryId.trim()) {
       setError('請填寫所有必填欄位')
       return
     }
 
-    const data = { name, status, category }
+    const data = { name, status, category_id: categoryId }
 
     if (isEdit) {
       const updated = await update(id!, data)
@@ -77,8 +79,15 @@ export function ProductForm() {
 
           <div className="form-group">
             <label htmlFor="category">分類 *</label>
-            <input id="category" type="text" placeholder="例如：電子產品"
-              value={category} onChange={e => setCategory(e.target.value)} />
+            <select id="category" value={categoryId} onChange={e => setCategoryId(e.target.value)}>
+              <option value="">請選擇分類</option>
+              {categories.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+            {categories.length === 0 && (
+              <p className="category-hint">尚未建立任何分類，請先到「類別管理」建立</p>
+            )}
           </div>
 
           <div className="form-actions">

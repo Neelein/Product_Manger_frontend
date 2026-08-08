@@ -41,6 +41,21 @@ export async function promoteToAdmin(email: string): Promise<void> {
   }
 }
 
+// freshCategory inserts a new category directly into the e2e DB and returns it.
+export async function freshCategory(): Promise<{ id: string; name: string }> {
+  const pool = new Pool({ connectionString: dbUrl() })
+  try {
+    const name = unique('類別')
+    const { rows } = await pool.query<{ id: string; name: string }>(
+      'INSERT INTO categories (name) VALUES ($1) RETURNING id, name',
+      [name],
+    )
+    return rows[0]
+  } finally {
+    await pool.end()
+  }
+}
+
 async function fillRegisterForm(
   page: Page,
   name: string,
