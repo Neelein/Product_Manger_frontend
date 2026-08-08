@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 // Vercel function: catch-all proxy for /api/*.
 //
 // Runtime: Node.js (default) using Vercel's recommended "fetch web handler"
