@@ -1,6 +1,5 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)",   "destination": "http://neeleindev.com:8090/api/$1" },
     { "source": "/media/(.*)", "destination": "http://neeleindev.com:8090/media/$1" }
   ]
 }

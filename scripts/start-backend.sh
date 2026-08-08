@@ -9,10 +9,12 @@ HEALTH_URL="http://localhost:${PORT}/api/health"
 DATABASE_URL="${E2E_DATABASE_URL:-postgres://root:root123@localhost:5432/productdb_e2e?sslmode=disable}"
 API_DOMAIN="http://localhost:${PORT}"
 MEDIA_ROOT="${E2E_MEDIA_ROOT:-${TMPDIR:-/tmp}/pm-e2e-media}"
+API_GATEWAY_SECRET="${E2E_API_SECRET:-e2e}"
 
 export DATABASE_URL
 export API_DOMAIN
 export MEDIA_ROOT
+export API_GATEWAY_SECRET
 
 mkdir -p "$MEDIA_ROOT"
 
