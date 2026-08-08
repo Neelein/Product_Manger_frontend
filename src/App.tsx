@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { AdminRoute } from './components/AdminRoute'
 import { LoginPage } from './pages/LoginPage'
 import { ProductList } from './pages/ProductList'
 import { ProductDetail } from './pages/ProductDetail'
@@ -22,6 +23,7 @@ import { CalendarEventDetailPage } from './pages/CalendarEventDetailPage'
 import { InventoryListPage } from './pages/InventoryListPage'
 import { InventoryCreatePage } from './pages/InventoryCreatePage'
 import { InventoryDetailPage } from './pages/InventoryDetailPage'
+import { RegistrationCodesPage } from './pages/RegistrationCodesPage'
 import './App.css'
 
 function App() {
@@ -70,6 +72,9 @@ function App() {
         } />
         <Route path="/chat/rooms/:roomId/add-members" element={
           <ProtectedRoute><AddRoomMembersPage /></ProtectedRoute>
+        } />
+        <Route path="/admin/registration-codes" element={
+          <AdminRoute><RegistrationCodesPage /></AdminRoute>
         } />
       </Route>
       <Route path="*" element={<Navigate to="/home" replace />} />

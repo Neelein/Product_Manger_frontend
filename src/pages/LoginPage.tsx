@@ -11,6 +11,8 @@ export function LoginPage() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [code, setCode] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
@@ -24,6 +26,8 @@ export function LoginPage() {
     setName('')
     setEmail('')
     setPassword('')
+    setConfirmPassword('')
+    setCode('')
     setError('')
     setSuccess('')
   }
@@ -54,6 +58,18 @@ export function LoginPage() {
       setError('請輸入姓名')
       return false
     }
+    if (mode === 'register' && !code.trim()) {
+      setError('請輸入註冊代碼')
+      return false
+    }
+    if (mode === 'register' && !confirmPassword) {
+      setError('請輸入確認密碼')
+      return false
+    }
+    if (mode === 'register' && confirmPassword !== password) {
+      setError('兩次輸入的密碼不一致')
+      return false
+    }
     return true
   }
 
@@ -71,11 +87,13 @@ export function LoginPage() {
         await login({ email, password })
         navigate('/home', { replace: true })
       } else {
-        await register({ email, password, name })
+        await register({ email, password, name, code })
         setSuccess('註冊成功！請切換至登入頁面')
         setName('')
         setEmail('')
         setPassword('')
+        setConfirmPassword('')
+        setCode('')
         setMode('login')
       }
     } catch (e) {
@@ -126,6 +144,19 @@ export function LoginPage() {
             </div>
           )}
 
+          {mode === 'register' && (
+            <div className="form-group">
+              <label htmlFor="code">註冊代碼</label>
+              <input
+                id="code"
+                type="text"
+                placeholder="請輸入註冊代碼"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+              />
+            </div>
+          )}
+
           <div className="form-group">
             <label htmlFor="email">電子郵件</label>
             <input
@@ -142,11 +173,26 @@ export function LoginPage() {
             <input
               id="password"
               type="password"
+              autoComplete="new-password"
               placeholder="至少 6 碼"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+
+          {mode === 'register' && (
+            <div className="form-group">
+              <label htmlFor="confirmPassword">確認密碼</label>
+              <input
+                id="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                placeholder="請輸入密碼"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
+          )}
 
           <button type="submit" className="submit-btn" disabled={loading}>
             {loading && <span className="spinner" />}
