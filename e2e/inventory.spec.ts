@@ -1,14 +1,15 @@
 import { expect, test } from '@playwright/test'
-import { registerAndLogin, unique } from './helpers'
+import { freshCategory, registerAndLogin, unique } from './helpers'
 
 async function createProductAndPrice(
   page: import('@playwright/test').Page,
 ): Promise<string> {
   const name = unique('庫存產品')
+  const category = await freshCategory()
   await page.goto('/products')
   await page.getByRole('link', { name: '新增產品' }).click()
   await page.getByLabel('產品名稱 *').fill(name)
-  await page.getByLabel('分類 *').fill(unique('電子產品'))
+  await page.getByLabel('分類 *').selectOption(category.name)
   await page.getByRole('button', { name: '建立產品' }).click()
 
   await page.getByRole('button', { name: '建立詳細資訊' }).click()

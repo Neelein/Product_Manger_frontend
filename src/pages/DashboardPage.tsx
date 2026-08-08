@@ -13,6 +13,12 @@ const FEATURES = [
     title: '庫存管理',
     description: '管理產品庫存與庫存項目',
   },
+  {
+    to: '/categories',
+    icon: '🏷️',
+    title: '類別管理',
+    description: '管理產品分類',
+  },
 ]
 
 export function DashboardPage() {

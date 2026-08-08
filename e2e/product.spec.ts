@@ -1,16 +1,16 @@
 import { expect, test } from '@playwright/test'
-import { registerAndLogin, unique } from './helpers'
+import { freshCategory, registerAndLogin, unique } from './helpers'
 
 async function createProduct(
   page: import('@playwright/test').Page,
   name: string,
-  category: string,
+  category: { id: string; name: string },
 ) {
   await page.goto('/products')
   await page.getByRole('link', { name: '新增產品' }).click()
   await expect(page.getByRole('heading', { name: '新增產品' })).toBeVisible()
   await page.getByLabel('產品名稱 *').fill(name)
-  await page.getByLabel('分類 *').fill(category)
+  await page.getByLabel('分類 *').selectOption(category.name)
   await page.getByRole('button', { name: '建立產品' }).click()
 }
 
@@ -41,7 +41,8 @@ test('create a product, see it in the list, add a price, and update it', async (
 
   const productName = unique('產品')
   const newName = `${productName}-已更新`
-  const category = unique('電子產品')
+
+  const category = await freshCategory()
 
   await createProduct(page, productName, category)
 
@@ -65,6 +66,7 @@ test('create a product, see it in the list, add a price, and update it', async (
   await page.getByRole('link', { name: '編輯' }).click()
   await expect(page.getByRole('heading', { name: '編輯產品' })).toBeVisible()
   await page.getByLabel('產品名稱 *').fill(newName)
+  await page.getByLabel('分類 *').selectOption(category.name)
   await page.getByRole('button', { name: '更新產品' }).click()
   await expect(page.getByRole('heading', { name: newName })).toBeVisible()
 })
