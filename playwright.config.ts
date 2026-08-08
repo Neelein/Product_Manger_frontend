@@ -24,7 +24,7 @@ export default defineConfig({
       timeout: 120_000,
     },
     {
-      command: 'npm run dev',
+      command: `API_GATEWAY_SECRET="${process.env.E2E_API_SECRET ?? 'e2e'}" npm run dev`,
       url: 'http://localhost:5173',
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,

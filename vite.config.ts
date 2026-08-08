@@ -8,6 +8,12 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8090',
         changeOrigin: true,
+        configure(proxy) {
+          proxy.on('proxyReq', (proxyReq) => {
+            const secret = process.env.API_GATEWAY_SECRET
+            if (secret) proxyReq.setHeader('Authorization', `Bearer ${secret}`)
+          })
+        },
       },
       '/media': {
         target: 'http://localhost:8090',
