@@ -17,6 +17,8 @@ Embedding the secret via `VITE_*` would ship it in the public JS bundle — anyo
 - `vercel.json`: the `/api/(.*)` external rewrite is removed so the function handles `/api/*`; the `/media/(.*)` rewrite is untouched.
 - Local/E2E: Vite dev proxy `proxyReq` hook injects `Authorization: Bearer $API_GATEWAY_SECRET` for `/api` only. Default secrets remain `e2e` on both sides so local E2E keeps the full gate path consistent.
 - The function file is added to `tsconfig.node.json` includes so `tsc -b` typechecks it (confirmed green).
+- Unit tests are kept in `tests/`, not `api/`, because Vercel's Vite filesystem-functions integration treats files under `api/` as Serverless Function candidates. `tests/proxy.test.ts` remains covered by the Node TypeScript project, and `test:proxy` runs it directly.
+- `api/[[...slug]].ts` declares a file-local `/// <reference types="node" />` so Vercel's function typecheck recognizes `process.env`; Node types remain out of the browser `tsconfig.app.json`.
 
 ## Limitations
 - The backend remains HTTP on port 8090 with no Nginx/HTTPS. Bearer credentials can be intercepted in transit; a future HTTPS rollout must rotate the shared secret.
