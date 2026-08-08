@@ -6,14 +6,14 @@ Frontend still calls relative `/api/*`. A Vercel serverless/edge function proxie
 ## Decisions (from backend plan, user-confirmed)
 - Option B: secret held by Vercel env (`API_GATEWAY_SECRET`) + backend server env. No `VITE_*` in the deployed bundle.
 - Local dev/E2E: Vite dev proxy injects the same header from `API_GATEWAY_SECRET` so the full path (browser → proxy → backend gate) is validated. This is server-side Vite configuration only.
-- Vercel non-framework filesystem function `api/[...slug].ts` forwards method/body/headers and streams the response; `vercel.json` `/api` rewrite removed so the function runs (keep `/media` rewrite). The previously used optional catch-all `api/[[...slug]].ts` did not match multi-segment paths in the deployed Vercel environment, so the required catch-all is used.
+- Vercel non-framework filesystem function `api/proxy.ts` forwards method/body/headers and streams the response; `vercel.json` rewrites `/api/:path*` to the fixed function with `__path=:path*` (keep `/media` rewrite). The previous catch-all function was replaced because multi-segment filesystem matching was unreliable in production.
 
 ## Changes
 | File | Action | Description |
 |------|--------|-------------|
-| `api/[...slug].ts` | New | Vercel function: proxy `/api/*` to the HTTP backend origin, add `Authorization: Bearer <API_GATEWAY_SECRET>`, forward method/query/headers/body, preserve cookies, and stream reply; includes a Node types reference for Vercel's function typecheck |
+| `api/proxy.ts` | New | Fixed Vercel function: reconstruct `/api/*` from the rewrite path, proxy to the HTTP backend origin, add `Authorization: Bearer <API_GATEWAY_SECRET>`, forward method/query/headers/body, preserve cookies, and stream reply |
 | `tests/proxy.test.ts` | New (moved from `api/proxy.test.ts`) | Node unit tests stay outside `api/`, which is reserved for real Vercel filesystem functions; Node TypeScript settings still check the test and allow its `.ts` import |
-| `vercel.json` | Modify | Remove `/api/(.*)` rewrite so the function handles it; keep `/media` |
+| `vercel.json` | Modify | Rewrite `/api/:path*` to `/api/proxy?__path=:path*`; keep `/media` |
 | `vite.config.ts` | Modify | Dev proxy `/api`: inject `Authorization: Bearer <API_GATEWAY_SECRET>` when set |
 | `.env.example` | New | Document local-only `API_GATEWAY_SECRET` |
 | `scripts/start-backend.sh` | Modify | Export `API_GATEWAY_SECRET="${E2E_API_SECRET:-e2e}"` to the backend process |
@@ -30,5 +30,5 @@ Frontend still calls relative `/api/*`. A Vercel serverless/edge function proxie
 - The current backend remains HTTP on port 8090; a Bearer secret can be intercepted in transit. A future HTTPS deployment must rotate the secret.
 - Vercel returns an explicit 500 when `API_GATEWAY_SECRET` is missing instead of sending an unauthenticated upstream request.
 - Vercel's Vite filesystem-functions integration treats every TypeScript file under `api/` as a function candidate, so unit tests must remain under `tests/`.
-- Vercel's deployed non-framework filesystem routing did not match multi-segment `/api/*` paths with the optional catch-all filename `api/[[...slug]].ts`; the required catch-all `api/[...slug].ts` is used instead.
+- Vercel's deployed non-framework filesystem routing did not reliably match multi-segment `/api/*` paths; a fixed `api/proxy.ts` function receives the original path through the rewrite.
 - The function uses a file-local `/// <reference types="node" />` so Vercel recognizes `process.env` without adding Node types to the browser `tsconfig.app.json`.

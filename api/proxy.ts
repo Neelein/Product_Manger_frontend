@@ -1,35 +1,13 @@
 /// <reference types="node" />
 
-// Vercel function: catch-all proxy for /api/*.
-//
-// Runtime: Node.js (default) using Vercel's recommended "fetch web handler"
-// signature (`export default { fetch(request) { ... } }`) for non-framework
-// (Vite) projects. Node's native fetch (undici) is used because the backend
-// origin is plain HTTP (http://neeleindev.com:8090); Node's fetch handles
-// http:// targets reliably, whereas the Edge runtime's fetch filters them.
-//
-// Every /api/* request lands here — the /api rewrite was removed from
-// vercel.json so this function, not Vercel's CDN proxy, talks to the backend.
-// We:
-//   1. rebuild the upstream URL (origin + same pathname + same query),
-//   2. forward the HTTP method, the client headers (cookie, content-type,
-//      accept, ...) and the request body as a stream,
-//   3. inject `Authorization: Bearer <API_GATEWAY_SECRET>` so the secret
-//      never ships in the browser bundle,
-//   4. stream the backend response (status, headers, body) straight back —
-//      important for image/multipart responses.
-//
-// No npm dependencies are required: this uses only the Web-standard
-// Request/Response globals and native fetch.
+// Fixed Vercel function for all /api/* requests. vercel.json supplies the
+// original path in __path because filesystem catch-all matching is unreliable
+// for this non-framework Vite project.
 
 export const config = { runtime: 'nodejs' }
 
 const BACKEND_ORIGIN = process.env.BACKEND_ORIGIN ?? 'http://neeleindev.com:8090'
 
-// Headers a forward proxy must not pass upstream unchanged: hop-by-hop
-// headers are recomputed by fetch, and accept-encoding/content-encoding are
-// dropped so the runtime manages compression transparently (avoids double
-// compression corrupting the body).
 const HEADERS_TO_STRIP = new Set([
   'host',
   'connection',
@@ -43,14 +21,28 @@ const HEADERS_TO_STRIP = new Set([
   'accept-encoding',
 ])
 
+export function getOriginalApiUrl(request: Request): URL | null {
+  const url = new URL(request.url)
+  const path = url.searchParams.get('__path')
+
+  if (!path || path.startsWith('/') || path.split('/').some((segment) => segment === '..')) {
+    return null
+  }
+
+  url.pathname = `/api/${path}`
+  url.searchParams.delete('__path')
+  return url
+}
+
 export function createUpstreamRequest(
   request: Request,
   backendOrigin: string,
   gatewaySecret: string,
 ): { url: string; init: RequestInit } {
-  const url = new URL(request.url)
-  const upstreamUrl = `${backendOrigin.replace(/\/$/, '')}${url.pathname}${url.search}`
+  const originalUrl = getOriginalApiUrl(request)
+  if (!originalUrl) throw new Error('Invalid API proxy path')
 
+  const upstreamUrl = `${backendOrigin.replace(/\/$/, '')}${originalUrl.pathname}${originalUrl.search}`
   const headers = new Headers(request.headers)
   for (const name of HEADERS_TO_STRIP) headers.delete(name)
   headers.set('authorization', `Bearer ${gatewaySecret}`)
@@ -71,6 +63,10 @@ export async function proxyRequest(
 ): Promise<Response> {
   if (!gatewaySecret) {
     return new Response('API_GATEWAY_SECRET is not configured', { status: 500 })
+  }
+
+  if (!getOriginalApiUrl(request)) {
+    return new Response('Invalid API proxy path', { status: 400 })
   }
 
   const upstreamRequest = createUpstreamRequest(request, backendOrigin, gatewaySecret)
