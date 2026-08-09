@@ -465,6 +465,22 @@
   font-size: 13px; color: #64748b;
 }
 
+.option-list, .variant-list { display: grid; gap: 10px; margin-bottom: 20px; }
+.option-item, .variant-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;
+}
+.option-value { margin-left: 12px; color: #64748b; }
+.variant-main { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.variant-main span { color: #64748b; font-size: 14px; }
+.variant-options { border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; display: flex; flex-wrap: wrap; gap: 10px 20px; }
+.variant-options legend { padding: 0 6px; font-size: 14px; font-weight: 600; color: #334155; }
+.variant-options label { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: #475569; }
+@media (max-width: 640px) {
+  .option-item, .variant-item { align-items: flex-start; flex-direction: column; }
+  .variant-main { flex-direction: column; align-items: flex-start; gap: 6px; }
+}
+
 .price-form {
   padding-top: 20px; border-top: 1px solid #e2e8f0;
 }
