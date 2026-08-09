@@ -21,7 +21,10 @@ async function createProductAndPrice(
   await page.getByLabel('新增 - 標籤').fill(priceLabel)
   await page.getByLabel('金額').fill('800')
   await page.getByRole('button', { name: '新增', exact: true }).click()
-  await expect(page.getByText('800')).toBeVisible()
+  await expect(
+    page.locator('.price-item-amount').filter({ hasText: /^800$/ }),
+  ).toBeVisible()
+  await page.reload()
 
   return name
 }
@@ -32,7 +35,8 @@ test('create a product with price, create an inventory, list it, add an item', a
   await registerAndLogin(page)
   await createProductAndPrice(page)
 
-  await page.getByRole('link', { name: '建立庫存' }).click()
+  const defaultVariant = page.locator('.variant-item').first()
+  await defaultVariant.getByRole('link', { name: '建立庫存' }).click()
   await expect(page.getByRole('heading', { name: '建立庫存' })).toBeVisible()
   await page.getByRole('button', { name: '建立庫存' }).click()
 
