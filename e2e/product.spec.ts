@@ -122,8 +122,12 @@ test('creates an option-backed variant with a shared price and variant inventory
   await page.getByRole('checkbox', { name: '顏色: 藍色' }).check()
   await page.getByRole('button', { name: '新增變體' }).click()
 
-  await expect(page.getByText('顏色: 藍色')).toBeVisible()
-  await expect(page.getByText('BLUE-001')).toBeVisible()
+  const variantItem = page.locator('.variant-item').filter({
+    has: page.locator('strong').filter({ hasText: /^顏色: 藍色$/ }),
+  })
+  await expect(variantItem).toHaveCount(1)
+  await expect(variantItem.locator('strong')).toHaveText('顏色: 藍色')
+  await expect(variantItem.getByText('SKU: BLUE-001', { exact: true })).toBeVisible()
 
   const inventoryRequest = page.waitForRequest(request =>
     request.url().endsWith('/api/inventories') && request.method() === 'POST',
