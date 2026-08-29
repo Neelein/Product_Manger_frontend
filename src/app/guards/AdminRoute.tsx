@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom'
-import { useAuth } from '../../features/auth'
+import { isAdminMember, useAuth } from '../../features/auth'
 
 export function AdminRoute({ children }: { children: React.ReactNode }) {
   const { member, loading } = useAuth()
@@ -12,7 +12,7 @@ export function AdminRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/login" replace />
   }
 
-  if (member.role !== 'admin') {
+  if (!isAdminMember(member)) {
     return <Navigate to="/home" replace />
   }
 

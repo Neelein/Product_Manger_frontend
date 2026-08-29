@@ -35,7 +35,10 @@ export async function freshCode(): Promise<string> {
 export async function promoteToAdmin(email: string): Promise<void> {
   const pool = new Pool({ connectionString: dbUrl() })
   try {
-    await pool.query("UPDATE members SET role = 'admin' WHERE email = $1", [email])
+    await pool.query(
+      "UPDATE members SET member_type = 'employee', permission = 'admin' WHERE email = $1",
+      [email],
+    )
   } finally {
     await pool.end()
   }

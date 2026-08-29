@@ -11,6 +11,7 @@ const APP_TABLES = [
   'announcements',
   'inventory_items',
   'inventories',
+  'product_images',
   'members',
   'registration_codes',
   'categories',

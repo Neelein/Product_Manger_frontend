@@ -16,7 +16,7 @@ test('admin can create, list and delete registration codes', async ({
 }) => {
   const { email } = await registerAndLogin(page)
   await promoteToAdmin(email)
-  // Reload so the client re-fetches /me and reflects the admin role.
+  // Reload so the client re-fetches /me and reflects employee/admin permission.
   await page.reload()
 
   await expect(page.getByRole('link', { name: '註冊代碼' })).toBeVisible()

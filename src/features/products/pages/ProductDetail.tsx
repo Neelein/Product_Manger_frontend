@@ -1,10 +1,13 @@
-import { useState, type SubmitEvent } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState, type SubmitEvent } from 'react'
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
 import { useProduct, useDeleteProduct } from '../hooks/useProducts'
 import { useAuth } from '../../auth/hooks/useAuth'
 import { createDetail, createOption, createPrice, createVariant, deleteOption, deleteVariant, updateDetail, updateOption, updatePrice, updateVariant } from '../api'
 import type { ProductOption, ProductPrice, ProductVariant } from '../types'
 import { useProductDetailData } from '../hooks/useProductDetailData'
+import { listProductImages } from '../api'
+import type { ProductImage } from '../types'
+import { resolveProductImageUrl } from '../imageValidation'
 
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>()
@@ -12,6 +15,7 @@ export function ProductDetail() {
   const { remove } = useDeleteProduct()
   const { member } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const { detail, setDetail, prices, setPrices, options, setOptions, variants, setVariants, inventoryMap, loadingDetail, loadingPrices, loadingVariants, loadingInventory } = useProductDetailData(id)
 
   const [editingDetail, setEditingDetail] = useState(false)
@@ -43,6 +47,13 @@ export function ProductDetail() {
   const [editingVariantId, setEditingVariantId] = useState<string | null>(null)
   const [variantError, setVariantError] = useState('')
   const [variantSubmitting, setVariantSubmitting] = useState(false)
+  const [images, setImages] = useState<ProductImage[]>([])
+  const [imageError, setImageError] = useState('')
+
+  useEffect(() => {
+    if (!id) return
+    listProductImages(id).then(response => setImages(response.images)).catch(e => setImageError(e instanceof Error ? e.message : '圖片載入失敗'))
+  }, [id])
 
   if (loading) return <div className="page-loading">載入中...</div>
   if (error || !product) return <div className="error-banner">⚠️ {error || '產品不存在'}</div>
@@ -125,6 +136,9 @@ export function ProductDetail() {
     <div className="product-detail-page">
       <div className="page-header"><Link to="/products" className="back-link">← 返回列表</Link>{member && <div className="header-actions"><Link to={`/products/${product.id}/edit`} className="btn-secondary">編輯</Link><button className="btn-danger" onClick={handleDelete}>刪除</button></div>}</div>
       <div className="detail-card"><div className="detail-header"><div><h1>{product.name}</h1><span className={`status-badge status-${product.status}`} style={{ marginTop: 8 }}>{product.status === 'active' ? '上架' : product.status === 'inactive' ? '下架' : product.status === 'deprecated' ? '註銷' : product.status}</span></div><span className="detail-category">{product.category}</span></div><div className="detail-body"><div className="detail-section"><label>分類</label><p>{product.category}</p></div><div className="detail-meta"><span>建立時間：{new Date(product.created_at).toLocaleDateString()}</span><span>更新時間：{new Date(product.updated_at).toLocaleDateString()}</span></div></div></div>
+
+      {location.state?.imageUploadError && <div className="error-banner" role="alert">⚠️ 產品已建立，但圖片上傳失敗：{location.state.imageUploadError}</div>}
+      <div className="section-card product-images-section"><div className="section-card-header"><h2 className="section-title">產品圖片</h2></div>{imageError ? <div className="error-banner" role="alert">⚠️ {imageError}</div> : images.length ? <div className="product-image-grid">{images.map(image => <img key={image.id} src={resolveProductImageUrl(image.url)} alt={image.filename} className="product-image-preview" />)}</div> : <p className="empty-field">尚無產品圖片</p>}</div>
 
       <div className="section-card"><div className="section-card-header"><h2 className="section-title">商品詳細資訊</h2>{member && detail && !editingDetail && <button className="btn-secondary" onClick={startEditDetail}>編輯</button>}</div>
         {loadingDetail ? <div className="page-loading" style={{ padding: '20px 0' }}>載入中...</div> : editingDetail ? <><form onSubmit={handleSubmitDetail}><div className="form-group"><label htmlFor="intro">介紹</label><textarea id="intro" rows={3} value={dIntro} onChange={e => setDIntro(e.target.value)} /></div><div className="form-group"><label htmlFor="usage">使用說明</label><textarea id="usage" rows={3} value={dUsage} onChange={e => setDUsage(e.target.value)} /></div><div className="form-group"><label htmlFor="return">退貨政策</label><textarea id="return" rows={3} value={dReturn} onChange={e => setDReturn(e.target.value)} /></div>{detailError && <div className="error-banner">⚠️ {detailError}</div>}<div className="form-actions"><button type="button" className="btn-secondary" onClick={() => setEditingDetail(false)}>取消</button><button type="submit" className="btn-primary" disabled={detailSubmitting}>{detailSubmitting ? '儲存中...' : detail ? '更新' : '建立'}</button></div></form></> : detail ? <div className="detail-content">{detail.introduction && <div className="detail-section"><label>介紹</label><p>{detail.introduction}</p></div>}{detail.usage_instructions && <div className="detail-section"><label>使用說明</label><p>{detail.usage_instructions}</p></div>}{detail.return_policy && <div className="detail-section"><label>退貨政策</label><p>{detail.return_policy}</p></div>}{!detail.introduction && !detail.usage_instructions && !detail.return_policy && <p className="empty-field">尚無詳細內容</p>}{detailSuccess && <div className="success-banner" style={{ marginTop: 16 }}>✅ {detailSuccess}</div>}</div> : <div><p className="empty-field" style={{ marginBottom: 16 }}>尚無詳細資訊</p>{member && <button className="btn-primary" onClick={startEditDetail}>建立詳細資訊</button>}</div>}

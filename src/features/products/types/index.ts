@@ -25,6 +25,18 @@ export interface ProductListResponse {
   products: Product[]
 }
 
+export interface ProductImage {
+  id: string
+  product_id: string
+  url: string
+  filename: string
+  created_at: string
+}
+
+export interface ProductImageListResponse {
+  images: ProductImage[]
+}
+
 export interface ProductDetail {
   id: string
   product_id: string

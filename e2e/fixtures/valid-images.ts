@@ -1,0 +1,6 @@
+const ONE_PIXEL_PNG =
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
+
+export function validPngBytes(): Buffer {
+  return Buffer.from(ONE_PIXEL_PNG, 'base64')
+}

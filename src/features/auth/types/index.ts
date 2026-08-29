@@ -1,8 +1,11 @@
+export type MemberType = 'customer' | 'employee'
+
 export interface Member {
   id: string
   email: string
   name: string
-  role?: string
+  member_type: MemberType
+  permission: string
 }
 
 export interface LoginRequest {

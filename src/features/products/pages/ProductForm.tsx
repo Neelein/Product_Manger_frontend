@@ -2,6 +2,9 @@ import { useState, useEffect, type SubmitEvent } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useProduct, useCreateProduct, useUpdateProduct } from '../hooks/useProducts'
 import { useCategories } from '../../categories/hooks/useCategories'
+import { listProductImages, uploadProductImages } from '../api'
+import type { ProductImage } from '../types'
+import { ProductImagePicker } from '../components/ProductImagePicker'
 
 export function ProductForm() {
   const { id } = useParams<{ id: string }>()
@@ -17,6 +20,10 @@ export function ProductForm() {
   const [status, setStatus] = useState('active')
   const [categoryId, setCategoryId] = useState('')
   const [error, setError] = useState('')
+  const [images, setImages] = useState<ProductImage[]>([])
+  const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [imageProgress, setImageProgress] = useState<number | null>(null)
+  const [imageError, setImageError] = useState('')
 
   useEffect(() => {
     if (isEdit && product) {
@@ -25,6 +32,11 @@ export function ProductForm() {
       setCategoryId(product.category_id || '')
     }
   }, [isEdit, product])
+
+  useEffect(() => {
+    if (!id) return
+    listProductImages(id).then(response => setImages(response.images)).catch(e => setImageError(e instanceof Error ? e.message : '圖片載入失敗'))
+  }, [id])
 
   if (isEdit && loadingProduct) return <div className="page-loading">載入中...</div>
 
@@ -41,10 +53,22 @@ export function ProductForm() {
 
     if (isEdit) {
       const updated = await update(id!, data)
-      if (updated) navigate(`/products/${id}`)
+      if (updated) {
+        if (imageFiles.length) {
+          setImageProgress(0)
+          try { await uploadProductImages(id!, imageFiles, setImageProgress) } catch (e) { setImageError(e instanceof Error ? e.message : '圖片上傳失敗'); return }
+        }
+        navigate(`/products/${id}`)
+      }
     } else {
       const created = await create(data)
-      if (created) navigate(`/products/${created.id}`)
+      if (created) {
+        if (imageFiles.length) {
+          setImageProgress(0)
+          try { await uploadProductImages(created.id, imageFiles, setImageProgress) } catch (e) { navigate(`/products/${created.id}`, { state: { imageUploadError: e instanceof Error ? e.message : '圖片上傳失敗' } }); return }
+        }
+        navigate(`/products/${created.id}`)
+      }
     }
   }
 
@@ -67,6 +91,10 @@ export function ProductForm() {
             <input id="name" type="text" placeholder="請輸入產品名稱"
               value={name} onChange={e => setName(e.target.value)} />
           </div>
+
+          <ProductImagePicker existingImages={images} onFilesChange={setImageFiles} />
+          {imageProgress !== null && <p className="upload-progress" role="status">圖片上傳中：{imageProgress}%</p>}
+          {imageError && <div className="error-banner" role="alert">⚠️ {imageError}</div>}
 
           <div className="form-group">
             <label htmlFor="status">狀態</label>
