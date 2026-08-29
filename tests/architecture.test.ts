@@ -52,3 +52,15 @@ test('shared boundary does not depend on features', () => {
   const sharedFiles = [join(root, 'shared', 'index.ts'), join(root, 'shared', 'api', 'client.ts'), join(root, 'shared', 'types', 'index.ts')]
   for (const file of sharedFiles) assert.doesNotMatch(readFileSync(file, 'utf8'), /features/)
 })
+
+test('frontend authorization uses member_type and permission, never role', () => {
+  const files = [
+    join(root, 'features', 'auth', 'types', 'index.ts'),
+    join(root, 'features', 'auth', 'authorization.ts'),
+    join(root, 'app', 'layout', 'Layout.tsx'),
+    join(root, 'app', 'guards', 'AdminRoute.tsx'),
+  ]
+  for (const file of files) assert.doesNotMatch(readFileSync(file, 'utf8'), /\brole\b/)
+  assert.match(readFileSync(join(root, 'features', 'auth', 'types', 'index.ts'), 'utf8'), /member_type/)
+  assert.match(readFileSync(join(root, 'features', 'auth', 'authorization.ts'), 'utf8'), /permission === 'admin'/)
+})

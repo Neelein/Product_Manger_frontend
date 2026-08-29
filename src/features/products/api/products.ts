@@ -1,5 +1,5 @@
-import { apiFetch } from '../../../shared/api/client'
-import type { CreateProductRequest, ProductListResponse, ProductResponse, UpdateProductRequest } from "../types"
+import { apiFetch, uploadFormDataWithProgress } from '../../../shared/api/client.ts'
+import type { CreateProductRequest, ProductImageListResponse, ProductListResponse, ProductResponse, UpdateProductRequest } from '../types/index.ts'
 export function listProducts(): Promise<ProductListResponse> {
   return apiFetch<ProductListResponse>('/api/products')
 }
@@ -24,4 +24,14 @@ export function updateProduct(id: string, data: UpdateProductRequest): Promise<P
 
 export function deleteProduct(id: string): Promise<void> {
   return apiFetch<void>(`/api/products/${id}/delete`, { method: 'POST' })
+}
+
+export function listProductImages(id: string): Promise<ProductImageListResponse> {
+  return apiFetch<ProductImageListResponse>(`/api/products/${id}/images`)
+}
+
+export function uploadProductImages(id: string, files: File[], onProgress?: (percent: number) => void): Promise<ProductImageListResponse> {
+  const formData = new FormData()
+  files.forEach(file => formData.append('images', file))
+  return uploadFormDataWithProgress<ProductImageListResponse>(`/api/products/${id}/images`, formData, onProgress)
 }

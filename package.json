@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "test:proxy": "node --experimental-strip-types --test tests/proxy.test.ts --test-reporter=spec",
+    "test:product-images": "node --experimental-strip-types --test tests/product-images.test.ts --test-reporter=spec",
     "test:architecture": "node --experimental-strip-types --test tests/architecture.test.ts --test-reporter=spec",
     "preview": "vite preview",
     "e2e": "playwright test",

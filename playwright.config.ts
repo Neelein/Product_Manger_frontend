@@ -20,13 +20,16 @@ export default defineConfig({
     {
       command: `E2E_BACKEND_DIR=${process.env.E2E_BACKEND_DIR ?? ''} bash scripts/start-backend.sh`,
       url: 'http://localhost:8090/api/health',
-      reuseExistingServer: !process.env.CI,
+      // Never attach to a server started with a different DATABASE_URL. A
+      // reused backend can make the direct registration-code fixture appear
+      // invalid when it is actually writing to productdb_e2e.
+      reuseExistingServer: false,
       timeout: 120_000,
     },
     {
       command: `API_GATEWAY_SECRET="${process.env.E2E_API_SECRET ?? 'e2e'}" npm run dev`,
       url: 'http://localhost:5173',
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: false,
       timeout: 120_000,
     },
   ],
