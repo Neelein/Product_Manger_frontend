@@ -631,6 +631,30 @@
   font-size: 16px;
 }
 
+.announcement-card-image {
+  display: block;
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 12px 0;
+  background: #f8fafc;
+}
+
+.announcement-image-fallback {
+  display: flex;
+  min-height: 96px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
 .announcement-card-preview {
   font-size: 14px; color: #475569; line-height: 1.6;
   margin: 0 0 12px 0;
@@ -668,7 +692,12 @@
 }
 
 .announcement-detail-image img {
-  max-width: 100%; border-radius: 12px;
+  display: block; max-width: 100%; border-radius: 12px;
+}
+
+.announcement-detail-image .announcement-image-fallback {
+  min-height: 160px;
+  border-radius: 12px;
 }
 
 .announcement-detail-content {

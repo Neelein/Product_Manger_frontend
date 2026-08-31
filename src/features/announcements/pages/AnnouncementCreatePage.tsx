@@ -1,10 +1,11 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCreateAnnouncement } from '../hooks/useAnnouncement'
+import { ANNOUNCEMENT_IMAGE_ACCEPT, validateAnnouncementImage } from '../imageValidation'
 
 export function AnnouncementCreatePage() {
   const navigate = useNavigate()
-  const { create, loading } = useCreateAnnouncement()
+  const { create, loading, error: apiError } = useCreateAnnouncement()
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -37,7 +38,7 @@ export function AnnouncementCreatePage() {
       <div className="form-card">
         <h1>建立公告</h1>
 
-        {error && <div className="error-banner">⚠️ {error}</div>}
+        {(error || apiError) && <div className="error-banner">⚠️ {error || apiError}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -52,12 +53,17 @@ export function AnnouncementCreatePage() {
           </div>
           <div className="form-group">
             <label htmlFor="image">圖片（選填）</label>
-            <input id="image" type="file" accept="image/*"
-              onChange={e => setImage(e.target.files?.[0] || null)} />
+            <input id="image" type="file" accept={ANNOUNCEMENT_IMAGE_ACCEPT}
+              onChange={e => {
+                const nextImage = e.target.files?.[0] || null
+                setImage(nextImage)
+                setError(validateAnnouncementImage(nextImage) || '')
+              }} />
+            <p className="form-help">僅接受 JPEG、PNG 或 WebP；檔案內容仍由伺服器驗證。</p>
           </div>
           <div className="form-actions">
             <Link to="/announcements" className="btn-secondary">取消</Link>
-            <button type="submit" className="btn-primary" disabled={loading}>
+            <button type="submit" className="btn-primary" disabled={loading || Boolean(error)}>
               {loading ? '建立中...' : '發布公告'}
             </button>
           </div>
