@@ -81,16 +81,23 @@ export function useCalendarEvent(id: string) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  useEffect(() => {
+  const fetchEvent = useCallback(async () => {
     if (!id) return
     setLoading(true)
-    eventsApi.getEvent(id)
-      .then(res => setEvent(res.event))
-      .catch(e => setError(e instanceof Error ? e.message : 'Failed to load event'))
-      .finally(() => setLoading(false))
+    setError('')
+    try {
+      const res = await eventsApi.getEvent(id)
+      setEvent(res.event)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to load event')
+    } finally {
+      setLoading(false)
+    }
   }, [id])
 
-  return { event, loading, error }
+  useEffect(() => { fetchEvent() }, [fetchEvent])
+
+  return { event, loading, error, setEvent, refetch: fetchEvent }
 }
 
 export function useCreateCalendarEvent() {

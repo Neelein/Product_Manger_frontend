@@ -7,18 +7,13 @@ import {
   useCalendarEventViewers,
 } from '../hooks/useCalendar'
 import { addEventViewer, removeEventViewer } from '../api/events'
-
-function toDatetimeLocal(s: string) {
-  const d = new Date(s)
-  const pad = (n: number) => n.toString().padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
-}
+import { toDatetimeLocal, toRfc3339 } from '../time'
 
 export function CalendarEventDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { event, loading, error } = useCalendarEvent(id!)
-  const { update } = useUpdateCalendarEvent()
+  const { event, loading, error, setEvent } = useCalendarEvent(id!)
+  const { update, error: updateError } = useUpdateCalendarEvent()
   const { remove } = useDeleteCalendarEvent()
   const { viewers, refetch: refetchViewers } = useCalendarEventViewers(id!)
 
@@ -49,10 +44,6 @@ export function CalendarEventDetailPage() {
     if (ok) navigate('/calendar', { replace: true })
   }
 
-  function toRfc3339(v: string) {
-    return v.includes('T') ? v + ':00Z' : v
-  }
-
   const handleSave = async (e: FormEvent) => {
     e.preventDefault()
     setSaving(true)
@@ -65,7 +56,10 @@ export function CalendarEventDetailPage() {
         end_time: toRfc3339(editEnd),
         status: editStatus,
       })
-      if (updated) setEditing(false)
+      if (updated) {
+        setEvent(updated)
+        setEditing(false)
+      }
     } catch (err) {
       setActionErr(err instanceof Error ? err.message : '更新失敗')
     } finally {
@@ -118,7 +112,7 @@ export function CalendarEventDetailPage() {
         </div>
       </div>
 
-      {actionErr && <div className="error-banner">⚠️ {actionErr}</div>}
+      {(actionErr || updateError) && <div className="error-banner">⚠️ {actionErr || updateError}</div>}
 
       {editing ? (
         <div className="form-card">
