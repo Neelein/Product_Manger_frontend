@@ -105,3 +105,18 @@ test('frontend authorization uses member_type and permission, never role', () =>
   assert.match(readFileSync(join(root, 'features', 'auth', 'types', 'index.ts'), 'utf8'), /member_type/)
   assert.match(readFileSync(join(root, 'features', 'auth', 'authorization.ts'), 'utf8'), /permission === 'admin'/)
 })
+
+test('Vercel preserves API and media rewrites before the SPA fallback', () => {
+  const vercelConfig = JSON.parse(readFileSync(join(process.cwd(), 'vercel.json'), 'utf8')) as {
+    rewrites: Array<{ source: string; destination: string }>
+  }
+
+  assert.deepEqual(vercelConfig.rewrites.slice(0, 2), [
+    { source: '/api/:path*', destination: '/api/proxy?__path=:path*' },
+    { source: '/media/(.*)', destination: 'http://neeleindev.com:8090/media/$1' },
+  ])
+  assert.deepEqual(vercelConfig.rewrites.at(-1), {
+    source: '/(.*)',
+    destination: '/index.html',
+  })
+})
