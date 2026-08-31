@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAnnouncements } from '../hooks/useAnnouncement'
 import { useAuth } from '../../auth/hooks/useAuth'
+import { AnnouncementImage } from '../components/AnnouncementImage'
 
 export function AnnouncementListPage() {
   const { announcements, loading, error } = useAnnouncements()
@@ -34,10 +35,10 @@ export function AnnouncementListPage() {
             <Link key={a.id} to={`/announcements/${a.id}`} className="announcement-card">
               <div className="announcement-card-top">
                 <h2 className="announcement-card-title">{a.title}</h2>
-                {a.image_path && (
-                  <span className="announcement-card-has-image">📷</span>
-                )}
               </div>
+              {a.image_path && (
+                <AnnouncementImage src={a.image_path} alt="" className="announcement-card-image" />
+              )}
               <p className="announcement-card-preview">
                 {a.content.length > 200 ? a.content.slice(0, 200) + '...' : a.content}
               </p>

@@ -1,6 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useAnnouncement, useDeleteAnnouncement } from '../hooks/useAnnouncement'
 import { useAuth } from '../../auth/hooks/useAuth'
+import { AnnouncementImage } from '../components/AnnouncementImage'
 
 export function AnnouncementDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -40,7 +41,7 @@ export function AnnouncementDetailPage() {
         </div>
         {announcement.image_path && (
           <div className="announcement-detail-image">
-            <img src={announcement.image_path} alt={announcement.title} />
+            <AnnouncementImage src={announcement.image_path} alt={announcement.title} />
           </div>
         )}
         <div className="announcement-detail-content">
