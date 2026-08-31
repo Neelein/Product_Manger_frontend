@@ -62,6 +62,7 @@ export interface DetailResponse {
 export interface ProductPrice {
   id: string
   product_detail_id: string
+  product_variant_id: string | null
   label: string
   amount: number
   currency: string

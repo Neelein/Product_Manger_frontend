@@ -3,10 +3,10 @@
 export interface Inventory {
   id: string
   product_variant_id: string
-  product_price_id: string
   product_detail_id: string
   product_id: string
   name: string
+  variant_name: string
   total_quantity: number
   sold_quantity: number
   status: string
@@ -15,8 +15,7 @@ export interface Inventory {
 }
 
 export interface CreateInventoryRequest {
-  product_variant_id?: string
-  product_price_id?: string
+  product_variant_id: string
   status?: string
 }
 

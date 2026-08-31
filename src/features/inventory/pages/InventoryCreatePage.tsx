@@ -5,7 +5,7 @@ import { useCreateInventory } from '../hooks/useInventory'
 const INVENTORY_STATUS_OPTIONS = ['銷售中', '完售', '註銷']
 
 export function InventoryCreatePage() {
-  const { variantId, priceId, legacyPriceId } = useParams<{ variantId?: string; priceId?: string; legacyPriceId?: string }>()
+  const { variantId } = useParams<{ variantId?: string }>()
   const navigate = useNavigate()
   const { create, loading, error: createError } = useCreateInventory()
 
@@ -16,7 +16,12 @@ export function InventoryCreatePage() {
     e.preventDefault()
     setError('')
 
-    const created = await create(variantId ? { product_variant_id: variantId, status } : { product_price_id: priceId || legacyPriceId!, status })
+    if (!variantId) {
+      setError('缺少產品變體')
+      return
+    }
+
+    const created = await create({ product_variant_id: variantId, status })
 
     if (created) {
       navigate(`/inventory/${created.id}`)

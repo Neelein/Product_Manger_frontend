@@ -40,8 +40,7 @@ export function useProductDetailData(productId: string | undefined) {
     listInventories().then(res => {
       const map: Record<string, Inventory> = {}
       for (const inventory of res.inventories) {
-        if (inventory.product_variant_id) map[inventory.product_variant_id] = inventory
-        if (inventory.product_price_id) map[inventory.product_price_id] = inventory
+        map[inventory.product_variant_id] = inventory
       }
       setInventoryMap(map)
     }).catch(() => setInventoryMap({})).finally(() => setLoadingInventory(false))
