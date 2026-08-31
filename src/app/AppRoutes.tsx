@@ -24,7 +24,7 @@ export default function AppRoutes() {
       <Route path="/events" element={<EventManagementPage />} /><Route path="/calendar" element={<CalendarPage />} />
       <Route path="/calendar/new" element={<ProtectedRoute><CalendarEventCreatePage /></ProtectedRoute>} /><Route path="/calendar/:id" element={<CalendarEventDetailPage />} />
       <Route path="/inventory" element={<InventoryListPage />} /><Route path="/categories" element={<ProtectedRoute><CategoryListPage /></ProtectedRoute>} />
-      <Route path="/inventory/new/:variantId" element={<ProtectedRoute><InventoryCreatePage /></ProtectedRoute>} /><Route path="/inventory/new/price/:priceId" element={<ProtectedRoute><InventoryCreatePage /></ProtectedRoute>} />
+      <Route path="/inventory/new/:variantId" element={<ProtectedRoute><InventoryCreatePage /></ProtectedRoute>} />
       <Route path="/inventory/:id" element={<InventoryDetailPage />} /><Route path="/announcements" element={<AnnouncementListPage />} />
       <Route path="/announcements/new" element={<ProtectedRoute><AnnouncementCreatePage /></ProtectedRoute>} /><Route path="/announcements/:id" element={<AnnouncementDetailPage />} />
       <Route path="/chat/rooms" element={<ProtectedRoute><ChatRoomListPage /></ProtectedRoute>} /><Route path="/chat/rooms/new" element={<ProtectedRoute><ChatRoomCreatePage /></ProtectedRoute>} />

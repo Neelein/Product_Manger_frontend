@@ -216,5 +216,10 @@ test('creates an option-backed variant with a shared price and variant inventory
   const requestBody = JSON.parse((await inventoryRequest).postData() || '{}') as Record<string, string>
   expect(requestBody.product_variant_id).toBeTruthy()
   expect(requestBody.product_price_id).toBeUndefined()
+  const inventoryName = new RegExp(`${productName}-.*${priceLabel}-.*顏色: 藍色`)
+  await expect(page.getByRole('heading', { name: inventoryName })).toBeVisible()
+  await expect(page.getByText('產品變體').locator('..')).toContainText('顏色: 藍色')
   await expect(page.getByRole('heading', { name: '庫存項目' })).toBeVisible()
+  await page.goto('/inventory')
+  await expect(page.getByRole('link', { name: inventoryName })).toBeVisible()
 })

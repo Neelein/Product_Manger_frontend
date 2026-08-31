@@ -28,6 +28,41 @@ test('feature boundaries expose pages and domain modules', () => {
   }
 })
 
+test('inventory contract is variant-owned and has no price-level inventory mapping', () => {
+  const inventoryTypes = readFileSync(join(root, 'features/inventory/types/index.ts'), 'utf8')
+  const inventoryCreatePage = readFileSync(join(root, 'features/inventory/pages/InventoryCreatePage.tsx'), 'utf8')
+  const detailDataHook = readFileSync(join(root, 'features/products/hooks/useProductDetailData.ts'), 'utf8')
+  const routes = readFileSync(join(root, 'app/AppRoutes.tsx'), 'utf8')
+
+  assert.match(inventoryTypes, /product_variant_id: string/)
+  assert.doesNotMatch(inventoryTypes, /product_price_id/)
+  assert.doesNotMatch(inventoryCreatePage, /product_price_id|priceId|legacyPriceId/)
+  assert.doesNotMatch(detailDataHook, /inventory\.product_price_id/)
+  assert.doesNotMatch(routes, /\/inventory\/new\/price/)
+})
+
+test('inventory UI uses the backend name and exposes the authoritative variant name', () => {
+  const inventoryTypes = readFileSync(join(root, 'features/inventory/types/index.ts'), 'utf8')
+  const inventoryListPage = readFileSync(join(root, 'features/inventory/pages/InventoryListPage.tsx'), 'utf8')
+  const inventoryDetailPage = readFileSync(join(root, 'features/inventory/pages/InventoryDetailPage.tsx'), 'utf8')
+
+  assert.match(inventoryTypes, /variant_name: string/)
+  assert.match(inventoryListPage, /\{i\.name\}/)
+  assert.match(inventoryDetailPage, /\{inventory\.name\}/)
+  assert.match(inventoryDetailPage, /\{inventory\.variant_name \|\| '未設定'\}/)
+  assert.doesNotMatch(inventoryListPage, /product_price_id|product_variant_id\s*\+|optionLabel\s*\(/)
+  assert.doesNotMatch(inventoryDetailPage, /product_price_id|product_variant_id\s*\+|optionLabel\s*\(/)
+})
+
+test('product price contract includes nullable variant mapping without inventory id', () => {
+  const productTypes = readFileSync(join(root, 'features/products/types/index.ts'), 'utf8')
+  const productPrice = productTypes.match(/export interface ProductPrice \{([\s\S]*?)\n\}/)?.[1]
+
+  assert.ok(productPrice, 'ProductPrice interface is missing')
+  assert.match(productPrice, /product_variant_id: string \| null/)
+  assert.doesNotMatch(productPrice, /inventory_id/)
+})
+
 test('application wiring is owned by app and preserves route contracts', () => {
   const routes = readFileSync(join(root, 'app', 'AppRoutes.tsx'), 'utf8')
   for (const path of ['/products', '/products/:id', '/inventory', '/categories', '/announcements', '/chat/rooms', '/calendar', '/admin/registration-codes']) {

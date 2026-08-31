@@ -210,6 +210,10 @@ export function InventoryDetailPage() {
           </div>
           <div className="detail-body">
             <div className="detail-section">
+              <label>產品變體</label>
+              <p>{inventory.variant_name || '未設定'}</p>
+            </div>
+            <div className="detail-section">
               <label>總數量</label>
               <p>{inventory.total_quantity.toLocaleString()}</p>
             </div>
