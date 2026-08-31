@@ -6,6 +6,12 @@ import { test } from 'node:test'
 const root = join(process.cwd(), 'src')
 const features = ['auth', 'products', 'inventory', 'categories', 'announcements', 'chat', 'calendar', 'registration-codes']
 
+test('local dotenv credentials are ignored', () => {
+  const gitignore = readFileSync(join(process.cwd(), '.gitignore'), 'utf8')
+
+  assert.match(gitignore, /^dotenv\.env$/m)
+})
+
 test('feature boundaries expose pages and domain modules', () => {
   for (const feature of features) {
     const directory = join(root, 'features', feature)

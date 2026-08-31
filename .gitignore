@@ -30,3 +30,6 @@ skills-lock.json
 *.njsproj
 *.sln
 *.sw?
+dotenv.env
+*.env
+*.env.example
