@@ -393,6 +393,10 @@
   background: #f8fafc;
 }
 
+.product-image-item { position: relative; min-width: 0; }
+.product-image-delete { width: 100%; margin-top: 6px; padding: 7px 10px; font-size: 13px; }
+.product-image-delete:disabled { opacity: 0.6; cursor: wait; }
+
 .upload-progress { color: #2563eb; font-size: 14px; margin: 8px 0 0; }
 
 /* ===== Profile Page ===== */

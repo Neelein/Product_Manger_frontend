@@ -2,7 +2,7 @@ import { useState, useEffect, type SubmitEvent } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useProduct, useCreateProduct, useUpdateProduct } from '../hooks/useProducts'
 import { useCategories } from '../../categories/hooks/useCategories'
-import { listProductImages, uploadProductImages } from '../api'
+import { deleteProductImage, listProductImages, uploadProductImages } from '../api'
 import type { ProductImage } from '../types'
 import { ProductImagePicker } from '../components/ProductImagePicker'
 
@@ -24,6 +24,7 @@ export function ProductForm() {
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [imageProgress, setImageProgress] = useState<number | null>(null)
   const [imageError, setImageError] = useState('')
+  const [deletingImageId, setDeletingImageId] = useState<string | null>(null)
 
   useEffect(() => {
     if (isEdit && product) {
@@ -37,6 +38,20 @@ export function ProductForm() {
     if (!id) return
     listProductImages(id).then(response => setImages(response.images)).catch(e => setImageError(e instanceof Error ? e.message : '圖片載入失敗'))
   }, [id])
+
+  const handleDeleteImage = async (image: ProductImage) => {
+    if (!id || deletingImageId) return
+    setImageError('')
+    setDeletingImageId(image.id)
+    try {
+      await deleteProductImage(id, image.id)
+      setImages(current => current.filter(currentImage => currentImage.id !== image.id))
+    } catch (e) {
+      setImageError(e instanceof Error ? e.message : '圖片刪除失敗')
+    } finally {
+      setDeletingImageId(null)
+    }
+  }
 
   if (isEdit && loadingProduct) return <div className="page-loading">載入中...</div>
 
@@ -92,7 +107,7 @@ export function ProductForm() {
               value={name} onChange={e => setName(e.target.value)} />
           </div>
 
-          <ProductImagePicker existingImages={images} onFilesChange={setImageFiles} />
+          <ProductImagePicker existingImages={images} onFilesChange={setImageFiles} onDeleteImage={isEdit ? handleDeleteImage : undefined} deletingImageId={deletingImageId} />
           {imageProgress !== null && <p className="upload-progress" role="status">圖片上傳中：{imageProgress}%</p>}
           {imageError && <div className="error-banner" role="alert">⚠️ {imageError}</div>}
 
@@ -120,7 +135,7 @@ export function ProductForm() {
 
           <div className="form-actions">
             <Link to={isEdit ? `/products/${id}` : '/products'} className="btn-secondary">取消</Link>
-            <button type="submit" className="btn-primary" disabled={creating || updating}>
+            <button type="submit" className="btn-primary" disabled={creating || updating || Boolean(deletingImageId)}>
               {creating || updating ? '儲存中...' : (isEdit ? '更新產品' : '建立產品')}
             </button>
           </div>

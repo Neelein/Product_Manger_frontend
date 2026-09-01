@@ -1,5 +1,10 @@
 import { apiFetch, uploadFormDataWithProgress } from '../../../shared/api/client.ts'
 import type { CreateProductRequest, ProductImageListResponse, ProductListResponse, ProductResponse, UpdateProductRequest } from '../types/index.ts'
+
+export interface DeleteProductImageResponse {
+  message: string
+}
+
 export function listProducts(): Promise<ProductListResponse> {
   return apiFetch<ProductListResponse>('/api/products')
 }
@@ -34,4 +39,8 @@ export function uploadProductImages(id: string, files: File[], onProgress?: (per
   const formData = new FormData()
   files.forEach(file => formData.append('images', file))
   return uploadFormDataWithProgress<ProductImageListResponse>(`/api/products/${id}/images`, formData, onProgress)
+}
+
+export function deleteProductImage(productId: string, imageId: string): Promise<DeleteProductImageResponse> {
+  return apiFetch<DeleteProductImageResponse>(`/api/products/${productId}/images/${imageId}/delete`, { method: 'POST' })
 }
