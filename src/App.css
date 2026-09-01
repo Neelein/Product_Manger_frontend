@@ -402,6 +402,14 @@
 /* ===== Profile Page ===== */
 
 .profile-page .form-card { max-width: 480px; }
+.password-change-card { margin-top: 24px; }
+.password-change-card h2 { font-size: 20px; font-weight: 700; color: #0f172a; margin: 0 0 24px; }
+
+@media (max-width: 640px) {
+  .form-card { padding: 24px 20px; }
+  .password-change-card .form-actions { justify-content: stretch; }
+  .password-change-card .btn-primary { width: 100%; justify-content: center; }
+}
 
 /* ===== Section Card (Detail/Price management) ===== */
 

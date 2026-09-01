@@ -106,6 +106,21 @@ test('frontend authorization uses member_type and permission, never role', () =>
   assert.match(readFileSync(join(root, 'features', 'auth', 'authorization.ts'), 'utf8'), /permission === 'admin'/)
 })
 
+test('password change stays on its dedicated API and profile section', () => {
+  const api = readFileSync(join(root, 'features/auth/api/members.ts'), 'utf8')
+  const profile = readFileSync(join(root, 'features/auth/pages/ProfilePage.tsx'), 'utf8')
+  assert.match(api, /'\/api\/members\/password'/)
+  const types = readFileSync(join(root, 'features/auth/types/index.ts'), 'utf8')
+  assert.match(types, /current_password|new_password|confirm_new_password/)
+  assert.match(profile, /修改密碼/)
+  assert.match(profile, /setPasswordError\(e instanceof Error \? e.message/)
+  assert.match(profile, /setPasswordSuccess\('密碼已更新，請重新登入'\)/)
+  assert.match(profile, /navigate\('\/login'/)
+  assert.match(profile, /clearSession\(\)/)
+  assert.match(profile, /disabled=\{passwordLoading\}/)
+  assert.doesNotMatch(profile, /updateMember\(\{[^}]*password/)
+})
+
 test('Vercel preserves API and media rewrites before the SPA fallback', () => {
   const vercelConfig = JSON.parse(readFileSync(join(process.cwd(), 'vercel.json'), 'utf8')) as {
     rewrites: Array<{ source: string; destination: string }>

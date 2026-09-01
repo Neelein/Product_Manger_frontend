@@ -8,6 +8,7 @@ export interface AuthContextValue {
   login: (data: LoginRequest) => Promise<Member>
   register: (data: RegisterRequest) => Promise<Member>
   logout: () => Promise<void>
+  clearSession: () => void
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null)
@@ -27,5 +28,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (data: LoginRequest) => { const res = await membersApi.login(data); setMember(res.member); return res.member }, [])
   const register = useCallback(async (data: RegisterRequest) => membersApi.register(data), [])
   const logout = useCallback(async () => { await membersApi.logout(); setMember(null) }, [])
-  return <AuthContext.Provider value={{ member, loading, login, register, logout }}>{children}</AuthContext.Provider>
+  const clearSession = useCallback(() => setMember(null), [])
+  return <AuthContext.Provider value={{ member, loading, login, register, logout, clearSession }}>{children}</AuthContext.Provider>
 }

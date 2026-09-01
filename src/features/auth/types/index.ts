@@ -33,3 +33,9 @@ export interface UpdateMemberRequest {
   email: string
   name: string
 }
+
+export interface ChangePasswordRequest {
+  current_password: string
+  new_password: string
+  confirm_new_password: string
+}

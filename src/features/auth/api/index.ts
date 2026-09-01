@@ -1,1 +1,1 @@
-export { login, register, logout, getCurrentMember, updateMember, listMembers } from './members'
+export { login, register, logout, getCurrentMember, updateMember, changePassword, listMembers } from './members'
