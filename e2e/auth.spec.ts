@@ -54,3 +54,17 @@ test('registering with a mismatched password confirmation is rejected', async ({
   await expect(page.getByText('兩次輸入的密碼不一致')).toBeVisible()
   await expect(page.getByLabel('確認密碼')).toBeVisible()
 })
+
+test('changing password clears the session and returns to login', async ({ page }) => {
+  const { password } = await registerAndLogin(page)
+
+  await page.goto('/profile')
+  await page.getByLabel('目前密碼').fill(password)
+  await page.getByLabel('新密碼', { exact: true }).fill('e2e-new-123')
+  await page.getByLabel('確認新密碼').fill('e2e-new-123')
+  await page.getByRole('button', { name: '修改密碼' }).click()
+
+  await expect(page.getByRole('status')).toHaveText(/密碼已更新，請重新登入/)
+  await expect(page.getByLabel('電子郵件')).toBeVisible({ timeout: 2_000 })
+  await expect(page).toHaveURL(/\/$/)
+})

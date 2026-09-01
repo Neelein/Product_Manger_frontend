@@ -1,5 +1,5 @@
-import { apiFetch } from '../../../shared/api/client'
-import type { LoginRequest, LoginResponse, Member, MembersListResponse, RegisterRequest, UpdateMemberRequest } from '../types'
+import { apiFetch } from '../../../shared/api/client.ts'
+import type { ChangePasswordRequest, LoginRequest, LoginResponse, Member, MembersListResponse, RegisterRequest, UpdateMemberRequest } from '../types/index.ts'
 
 export function login(data: LoginRequest): Promise<LoginResponse> {
   return apiFetch<LoginResponse>('/api/members/login', {
@@ -25,6 +25,13 @@ export function getCurrentMember(): Promise<Member> {
 
 export function updateMember(data: UpdateMemberRequest): Promise<Member> {
   return apiFetch<Member>('/api/members/update', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export function changePassword(data: ChangePasswordRequest): Promise<void> {
+  return apiFetch<void>('/api/members/password', {
     method: 'POST',
     body: JSON.stringify(data),
   })
