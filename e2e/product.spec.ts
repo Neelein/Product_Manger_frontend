@@ -157,12 +157,16 @@ test('appends a product image from the edit page against productdb_e2e', async (
   await expect(page.getByRole('heading', { name: productName })).toBeVisible()
   await expect(page.locator('.product-images-section .product-image-preview')).toHaveCount(2)
 
+  await page.getByRole('link', { name: '編輯' }).click()
+  await expect(page.getByRole('heading', { name: '編輯產品' })).toBeVisible()
   await page.once('dialog', dialog => dialog.accept())
   const deleteImageRequest = page.waitForRequest(request =>
     request.url().match(/\/api\/products\/[^/]+\/images\/[^/]+\/delete$/) !== null &&
     request.method() === 'POST',
   )
-  await page.getByRole('button', { name: '刪除圖片 first.png' }).click()
+  // The backend stores a generated UUID filename, so the persisted filename
+  // is not the original upload name (`first.png`). Select by image row instead.
+  await page.locator('.product-image-item').first().getByRole('button').click()
   await deleteImageRequest
   await expect(page.locator('.product-image-grid .product-image-preview')).toHaveCount(1)
 
@@ -170,7 +174,7 @@ test('appends a product image from the edit page against productdb_e2e', async (
     route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ error: '圖片刪除失敗' }) }),
   )
   await page.once('dialog', dialog => dialog.accept())
-  await page.getByRole('button', { name: '刪除圖片 second.png' }).click()
+  await page.locator('.product-image-item').first().getByRole('button').click()
   await expect(page.getByRole('alert')).toContainText('圖片刪除失敗')
   await expect(page.locator('.product-image-grid .product-image-preview')).toHaveCount(1)
 })
