@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { uploadProductImages } from '../src/features/products/api/products.ts'
+import { deleteProductImage, uploadProductImages } from '../src/features/products/api/products.ts'
 import { MAX_IMAGE_SIZE, resolveProductImageUrl, validateProductImages } from '../src/features/products/imageValidation.ts'
 
 const file = (name: string, type: string, size = 10) => new File([new Uint8Array(size)], name, { type })
@@ -40,4 +40,28 @@ test('uploads repeated images fields to the product image endpoint and reports p
   await uploadProductImages('product-1', [file('a.png', 'image/png'), file('b.webp', 'image/webp')], value => progress.push(value))
   assert.deepEqual(progress, [50])
   Object.defineProperty(globalThis, 'XMLHttpRequest', { value: previousXHR, configurable: true })
+})
+
+test('deletes one product image with the scoped POST endpoint and returns the success message', async () => {
+  const previousFetch = globalThis.fetch
+  let request: { url: string; method: string } | undefined
+  globalThis.fetch = async (input, init) => {
+    request = { url: String(input), method: init?.method ?? 'GET' }
+    return new Response(JSON.stringify({ message: 'product image deleted' }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+  }
+  const response = await deleteProductImage('product-1', 'image-2')
+  assert.equal(request?.url, '/api/products/product-1/images/image-2/delete')
+  assert.equal(request?.method, 'POST')
+  assert.equal(response.message, 'product image deleted')
+  globalThis.fetch = previousFetch
+})
+
+test('surfaces delete API failures with their HTTP status and backend message', async () => {
+  const previousFetch = globalThis.fetch
+  globalThis.fetch = async () => new Response(JSON.stringify({ error: '圖片刪除失敗' }), { status: 500, headers: { 'Content-Type': 'application/json' } })
+  await assert.rejects(
+    () => deleteProductImage('product-1', 'image-2'),
+    error => error instanceof Error && error.message === '圖片刪除失敗' && 'status' in error && error.status === 500,
+  )
+  globalThis.fetch = previousFetch
 })

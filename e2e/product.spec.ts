@@ -156,6 +156,23 @@ test('appends a product image from the edit page against productdb_e2e', async (
   expect(appendedImagesRequest.headers()['content-type']).toContain('multipart/form-data')
   await expect(page.getByRole('heading', { name: productName })).toBeVisible()
   await expect(page.locator('.product-images-section .product-image-preview')).toHaveCount(2)
+
+  await page.once('dialog', dialog => dialog.accept())
+  const deleteImageRequest = page.waitForRequest(request =>
+    request.url().match(/\/api\/products\/[^/]+\/images\/[^/]+\/delete$/) !== null &&
+    request.method() === 'POST',
+  )
+  await page.getByRole('button', { name: '刪除圖片 first.png' }).click()
+  await deleteImageRequest
+  await expect(page.locator('.product-image-grid .product-image-preview')).toHaveCount(1)
+
+  await page.route('**/api/products/*/images/*/delete', route =>
+    route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ error: '圖片刪除失敗' }) }),
+  )
+  await page.once('dialog', dialog => dialog.accept())
+  await page.getByRole('button', { name: '刪除圖片 second.png' }).click()
+  await expect(page.getByRole('alert')).toContainText('圖片刪除失敗')
+  await expect(page.locator('.product-image-grid .product-image-preview')).toHaveCount(1)
 })
 
 test('creates an option-backed variant with a shared price and variant inventory', async ({ page }) => {
