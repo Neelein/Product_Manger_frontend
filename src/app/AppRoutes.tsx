@@ -11,6 +11,7 @@ import { ChatRoomListPage, ChatRoomDetailPage, ChatRoomCreatePage, AddRoomMember
 import { CalendarPage, CalendarEventCreatePage, CalendarEventDetailPage, EventManagementPage } from '../features/calendar'
 import { RegistrationCodesPage } from '../features/registration-codes'
 import { DashboardPage } from '../features/dashboard'
+import { DepartmentEmployeeDirectoryPage, DepartmentEntryPage, DepartmentManagementPage } from '../features/departments'
 import '../App.css'
 
 export default function AppRoutes() {
@@ -29,7 +30,10 @@ export default function AppRoutes() {
       <Route path="/announcements/new" element={<ProtectedRoute><AnnouncementCreatePage /></ProtectedRoute>} /><Route path="/announcements/:id" element={<AnnouncementDetailPage />} />
       <Route path="/chat/rooms" element={<ProtectedRoute><ChatRoomListPage /></ProtectedRoute>} /><Route path="/chat/rooms/new" element={<ProtectedRoute><ChatRoomCreatePage /></ProtectedRoute>} />
       <Route path="/chat/rooms/:roomId" element={<ProtectedRoute><ChatRoomDetailPage /></ProtectedRoute>} /><Route path="/chat/rooms/:roomId/add-members" element={<ProtectedRoute><AddRoomMembersPage /></ProtectedRoute>} />
-      <Route path="/admin/registration-codes" element={<AdminRoute><RegistrationCodesPage /></AdminRoute>} />
+       <Route path="/admin/registration-codes" element={<AdminRoute><RegistrationCodesPage /></AdminRoute>} />
+       <Route path="/admin/departments/entry" element={<ProtectedRoute><DepartmentEntryPage /></ProtectedRoute>} />
+       <Route path="/admin/departments" element={<AdminRoute><DepartmentManagementPage /></AdminRoute>} />
+      <Route path="/admin/departments/:departmentCode/employees" element={<ProtectedRoute><DepartmentEmployeeDirectoryPage /></ProtectedRoute>} />
     </Route><Route path="*" element={<Navigate to="/home" replace />} />
   </Routes>
 }

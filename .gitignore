@@ -33,3 +33,11 @@ skills-lock.json
 dotenv.env
 *.env
 *.env.example
+
+# Credentials and private keys
+credentials*
+*credentials*
+*.pem
+*.key
+*.p12
+*.pfx

@@ -37,9 +37,7 @@ export function changePassword(data: ChangePasswordRequest): Promise<void> {
   })
 }
 
-export function listMembers(page = 1, limit = 50): Promise<MembersListResponse> {
-  return apiFetch<MembersListResponse>('/api/members', {
-    method: 'POST',
-    body: JSON.stringify({ page, limit }),
-  })
+export function listMembers(query = '', page = 1, limit = 20): Promise<MembersListResponse> {
+  const params = new URLSearchParams({ query, page: String(page), limit: String(limit) })
+  return apiFetch<MembersListResponse>(`/api/members?${params.toString()}`)
 }
