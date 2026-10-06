@@ -14,6 +14,7 @@
     "test:calendar-time": "node --experimental-strip-types --test tests/calendar-time.test.ts --test-reporter=spec",
     "test:password-change": "node --experimental-strip-types --test tests/password-change.test.ts --test-reporter=spec",
     "test:departments": "node --experimental-strip-types --test tests/departments.test.ts --test-reporter=spec",
+    "test:start-backend": "node --experimental-strip-types --test tests/start-backend.test.ts --test-reporter=spec",
     "preview": "vite preview",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
