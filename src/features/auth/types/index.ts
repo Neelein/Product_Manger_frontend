@@ -6,6 +6,7 @@ export interface Member {
   name: string
   member_type: MemberType
   permission: string
+  department_code?: number
 }
 
 export interface LoginRequest {

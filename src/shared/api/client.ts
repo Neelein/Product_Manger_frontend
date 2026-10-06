@@ -17,6 +17,10 @@ export async function apiFetch<T>(url: string, options: RequestInit = {}): Promi
     ...options,
   })
   const body = await res.text()
+  if (body === '') {
+    if (!res.ok) throw new ApiError(`HTTP ${res.status}`, res.status, body)
+    return undefined as T
+  }
   let data: unknown
   try {
     data = JSON.parse(body)

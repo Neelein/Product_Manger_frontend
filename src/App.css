@@ -100,6 +100,20 @@
 
 .form-group input::placeholder, .form-group textarea::placeholder { color: #94a3b8; }
 
+.departments-page .department-select {
+  width: 100%; padding: 12px 16px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px; font-size: 15px;
+  color: #0f172a; background: #f8fafc;
+  transition: all 0.2s ease; outline: none;
+  padding-right: 32px; box-sizing: border-box;
+}
+
+.departments-page .department-select:focus {
+  border-color: #3b82f6; background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
 .form-actions {
@@ -1325,4 +1339,50 @@
 
 .category-hint {
   margin-top: 8px; font-size: 13px; color: #94a3b8;
+}
+
+/* ===== Departments ===== */
+
+.departments-page .data-table { width: 100%; border-collapse: collapse; }
+.departments-page .data-table th {
+  text-align: left; padding: 10px 12px; border-bottom: 2px solid #e2e8f0;
+  font-size: 13px; font-weight: 600; color: #64748b;
+}
+.departments-page .data-table th:first-child,
+.departments-page .data-table th:last-child,
+.departments-page .data-table td:first-child,
+.departments-page .data-table td:last-child { text-align: center; }
+.departments-page .data-table td {
+  padding: 10px 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px;
+}
+.departments-page .data-table tr:last-child td { border-bottom: none; }
+.departments-page .data-table td:last-child {
+  display: flex; gap: 8px; justify-content: center; align-items: center;
+}
+.department-create-form { display: flex; gap: 8px; margin: 16px 0; }
+.department-create-form input, .department-rename-input {
+  flex: 1; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+  font-size: 14px; color: #0f172a; background: #f8fafc; outline: none;
+  transition: all 0.2s ease; box-sizing: border-box;
+}
+.department-create-form input:focus, .department-rename-input:focus {
+  border-color: #3b82f6; background: #ffffff; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+.department-rename-input { width: 100%; padding: 8px 12px; border-radius: 8px; }
+.department-section { margin-top: 24px; }
+.department-section h2 { font-size: 20px; color: #0f172a; margin-bottom: 12px; }
+.table-scroll { overflow-x: auto; }
+.department-pagination { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 16px; }
+.department-directory-page .data-table { width: 100%; border-collapse: collapse; }
+.department-directory-page .data-table th { text-align: left; padding: 10px 12px; border-bottom: 2px solid #e2e8f0; font-size: 13px; color: #64748b; }
+.department-directory-page .data-table td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+.sort-button { border: 0; background: transparent; color: inherit; font: inherit; font-weight: 600; padding: 0; }
+.sort-button:hover { color: #2563eb; }
+.btn-sm { padding: 8px 14px; }
+
+@media (max-width: 640px) {
+  .department-create-form { flex-direction: column; }
+  .department-create-form .btn-primary { justify-content: center; }
+  .departments-page .data-table { min-width: 620px; }
+  .department-directory-page .data-table { min-width: 700px; }
 }
